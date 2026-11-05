@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "oXFB+Vd7p7o=",
+  "success": true,
+  "projectFilePath": "/Users/ryanmilkiewicz/Desktop/Projects/Caffeinated/backend/backend.csproj",
+  "expectedPackageFiles": [
+    "/Users/ryanmilkiewicz/.nuget/packages/microsoft.aspnetcore.openapi/10.0.12/microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
+    "/Users/ryanmilkiewicz/.nuget/packages/microsoft.openapi/2.12.0/microsoft.openapi.2.12.0.nupkg.sha512"
+  ],
+  "logs": []
+}
