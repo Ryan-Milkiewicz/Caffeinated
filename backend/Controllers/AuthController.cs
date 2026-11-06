@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.DTOs.Auth;
@@ -137,6 +137,41 @@ namespace backend.Controllers
                 email = user.Email,
                 displayName = profile?.DisplayName
             });
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var profile = await _context.UserProfiles
+                .FirstOrDefaultAsync(p => p.UserId == user.Id);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                userId = user.Id,
+                email = user.Email,
+                displayName = profile?.DisplayName,
+                profilePictureUrl = profile?.ProfilePictureUrl,
+                roles
+            });
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return NoContent();
         }
     }
 }
