@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - backend_obj:/app/obj
+    working_dir: /app
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+    command: dotnet watch run --urls http://0.0.0.0:8080
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    command: npm run dev
+
+  postgres:
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  pgadmin:
+    volumes:
+      - ./pgadmin-config:/pgadmin-config
+
+volumes:
+  backend_obj:
