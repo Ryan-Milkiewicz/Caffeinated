@@ -40,6 +40,7 @@ namespace backend.Controllers
             // Create the Identity user.
             var user = new ApplicationUser
             {
+                Id = Guid.NewGuid(),
                 UserName = request.Email,
                 Email = request.Email
             };

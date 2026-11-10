@@ -13,12 +13,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services
-    .AddIdentity<ApplicationUser, IdentityRole>(options =>
+ .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
     {
-        // User settings
         options.User.RequireUniqueEmail = true;
 
-        // Password requirements
         options.Password.RequiredLength = 8;
         options.Password.RequireDigit = true;
         options.Password.RequireUppercase = true;

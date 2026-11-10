@@ -4,9 +4,9 @@ namespace backend.Models;
 
 public class UserProfile
 {
-     public int Id { get; set; }
+     public Guid Id { get; set; }
 
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 
     public string DisplayName { get; set; } = string.Empty;
 
