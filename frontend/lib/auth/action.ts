@@ -1,11 +1,5 @@
 "use server";
-
 import { redirect } from "next/navigation";
-
-// type SignupState = {
-//   success: boolean;
-//   message: string;
-// } | null;
 
 type SignupState = {
   success: boolean;
@@ -18,6 +12,11 @@ type SignupState = {
     businessType?: string;
     gender?: string;
   };
+} | null;
+
+type LoginState = {
+  success: boolean;
+  message: string;
 } | null;
 
 export async function SignupUser(
@@ -91,4 +90,45 @@ export async function SignupUser(
   }
 
   redirect("/login");
+}
+
+export async function LoginUser(
+  prevState: LoginState,
+  formData: FormData,
+): Promise<LoginState> {
+  // Get the form values from the FormData object
+  const email = formData.get("email")?.toString().trim();
+  const password = formData.get("password")?.toString();
+
+  // Create the form registration object to send to the api
+  const loginData = {
+    email,
+    password,
+  };
+
+  // Create the request to the api to login the user
+  const response = await fetch(`${process.env.API_URL}/api/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginData),
+    cache: "no-store",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    return {
+      success: false,
+      message: result.message ?? "Invalid email or password.",
+    };
+  }
+
+  // Check if user is a business or consumer and redirect accordingly
+  if (result.businesses?.length > 0) {
+    redirect("/dashboard");
+  }
+
+  redirect("/feed");
 }

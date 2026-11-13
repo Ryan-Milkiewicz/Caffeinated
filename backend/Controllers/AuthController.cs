@@ -137,6 +137,7 @@ namespace backend.Controllers
                 message = "Login successful.",
                 userId = user.Id,
                 email = user.Email,
+                roles = await _userManager.GetRolesAsync(user),
                 displayName = profile?.DisplayName
             });
         }
