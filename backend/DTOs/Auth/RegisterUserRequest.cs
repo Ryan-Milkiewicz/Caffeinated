@@ -16,4 +16,5 @@ public class RegisterUserRequest
     [Required]
     [MaxLength(50)]
     public string DisplayName { get; set; } = string.Empty;
+    public string? Location{ get; set; }
 }

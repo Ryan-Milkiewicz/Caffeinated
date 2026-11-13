@@ -59,7 +59,8 @@ namespace backend.Controllers
             var profile = new UserProfile
             {
                 UserId = user.Id,
-                DisplayName = request.DisplayName
+                DisplayName = request.DisplayName,
+                Location = request.Location,
             };
 
             // Add the profile 
@@ -86,9 +87,9 @@ namespace backend.Controllers
             return Ok(new
             {
                 message = "Registration successful.",
-                userId = user.Id,
-                email = user.Email,
-                displayName = profile.DisplayName
+                //userId = user.Id,
+                //email = user.Email,
+                //displayName = profile.DisplayName
             });
         }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useActionState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -28,51 +28,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { SignupUser } from "@/lib/auth/action";
+
 type AccountType = "consumer" | "business";
 type BusinessType = "Cafe" | "Roaster";
 
 export function SignupForm() {
   const [accountType, setAccountType] = useState<AccountType>("consumer");
   const [businessType, setBusinessType] = useState<BusinessType>("Cafe");
-  const [gender, setGender] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-
-    const formData = new FormData(event.currentTarget);
-
-    const displayName = formData.get("displayName")?.toString().trim();
-    const email = formData.get("email")?.toString().trim();
-    const password = formData.get("password")?.toString();
-    const confirmPassword = formData.get("confirmPassword")?.toString();
-    const location = formData.get("location")?.toString().trim();
-
-    // check that passwords match
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    const registrationData = {
-      accountType,
-      businessType,
-      displayName,
-      email,
-      password,
-      location,
-      gender: gender || null,
-    };
-
-    console.log("Registration data:", registrationData);
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Account created successfully!");
-    }, 2000);
-  }
+  const [state, action, pending] = useActionState(SignupUser, null);
 
   return (
     <Card>
@@ -82,35 +46,37 @@ export function SignupForm() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit}>
+        <form action={action} className="space-y-4">
           <FieldGroup>
             <Field>
               <FieldLabel>Account type</FieldLabel>
 
               <div className="grid grid-cols-2 rounded-xl border border-border bg-muted p-1">
-                <button
-                  type="button"
-                  onClick={() => setAccountType("consumer")}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-                    accountType === "consumer"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Coffee enthusiast
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAccountType("business")}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-                    accountType === "business"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Cafe / Roaster
-                </button>
+                {(
+                  [
+                    { value: "consumer", label: "Coffee enthusiast" },
+                    { value: "business", label: "Cafe / Roaster" },
+                  ] as const
+                ).map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`cursor-pointer rounded-lg px-3 py-2 text-center text-sm font-medium transition ${
+                      accountType === opt.value
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="accountType"
+                      value={opt.value}
+                      checked={accountType === opt.value}
+                      onChange={() => setAccountType(opt.value)}
+                      className="sr-only"
+                    />
+                    {opt.label}
+                  </label>
+                ))}
               </div>
             </Field>
 
@@ -119,6 +85,8 @@ export function SignupForm() {
               <Input
                 id="displayName"
                 name="displayName"
+                type="text"
+                defaultValue={state?.values?.displayName}
                 placeholder="Jane Smith"
                 required
               />
@@ -130,6 +98,7 @@ export function SignupForm() {
                 id="email"
                 name="email"
                 type="email"
+                defaultValue={state?.values?.email}
                 placeholder="you@example.com"
                 required
               />
@@ -166,15 +135,16 @@ export function SignupForm() {
               <Input
                 id="location"
                 name="location"
+                type="text"
+                defaultValue={state?.values?.location}
                 placeholder="Location (Optional)"
-                required
               />
             </Field>
 
             <Field>
               <FieldLabel htmlFor="gender">Gender</FieldLabel>
 
-              <Select value={gender} onValueChange={setGender}>
+              <Select name="gender">
                 <SelectTrigger id="gender" className="w-full">
                   <SelectValue placeholder="Select a gender" />
                 </SelectTrigger>
@@ -200,6 +170,7 @@ export function SignupForm() {
                 <select
                   id="businessType"
                   name="businessType"
+                  defaultValue={state?.values?.businessType}
                   value={businessType}
                   onChange={(event) =>
                     setBusinessType(event.target.value as BusinessType)
@@ -212,9 +183,20 @@ export function SignupForm() {
               </Field>
             )}
 
+            {state?.message && (
+              <p
+                className={
+                  state.success
+                    ? "text-sm text-green-600"
+                    : "text-sm text-destructive"
+                }
+              >
+                {state.message}
+              </p>
+            )}
             <Field>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Creating account..." : "Create account"}
+              <Button type="submit" className="w-full" disabled={pending}>
+                {pending ? "Creating account..." : "Create account"}
               </Button>
 
               <FieldDescription className="text-center">
@@ -226,7 +208,6 @@ export function SignupForm() {
                   Log in
                 </Link>
               </FieldDescription>
-              {error && <p className="text-sm text-destructive">{error}</p>}
             </Field>
           </FieldGroup>
         </form>
