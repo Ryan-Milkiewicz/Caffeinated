@@ -1,5 +1,7 @@
 "use server";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import SetCookieParser from "set-cookie-parser";
 
 type SignupState = {
   success: boolean;
@@ -125,10 +127,69 @@ export async function LoginUser(
     };
   }
 
+  // Froward the cookie to the browser
+  const setCookieHeaders = response.headers.getSetCookie();
+  const parsedCookies = SetCookieParser.parse(setCookieHeaders);
+  const cookieStore = await cookies();
+
+  for (const cookie of parsedCookies) {
+    cookieStore.set({
+      name: cookie.name,
+      value: cookie.value,
+      httpOnly: cookie.httpOnly,
+      //secure: cookie.secure,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: cookie.path,
+      expires: cookie.expires,
+      maxAge: cookie.maxAge,
+    });
+  }
+
   // Check if user is a business or consumer and redirect accordingly
-  if (result.businesses?.length > 0) {
+  if (result.roles?.includes("Business")) {
     redirect("/dashboard");
   }
 
   redirect("/feed");
+}
+
+export async function getCurrentUser() {
+  try {
+    const cookieStore = await cookies();
+
+    const response = await fetch(`${process.env.API_URL}/api/auth/me`, {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function LogoutUser() {
+  const cookieStore = await cookies();
+
+  try {
+    await fetch(`${process.env.API_URL}/api/auth/logout`, {
+      method: "POST",
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+  } finally {
+    // Clear the authentication cookie in the browser
+    cookieStore.delete(".AspNetCore.Identity.Application");
+  }
+
+  redirect("/login");
 }

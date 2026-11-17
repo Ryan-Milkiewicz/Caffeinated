@@ -3,14 +3,20 @@ FROM node:26-slim
 
 WORKDIR /app
 
+# Enable pnpm
+RUN npm install -g pnpm
+
 # Copy dependency manifests
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
+#COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install
+#RUN npm ci
 
 # Expose Next.js development port
 EXPOSE 3000
 
 # Start Next.js in development mode
-CMD ["npm", "run", "dev"]
+#CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]

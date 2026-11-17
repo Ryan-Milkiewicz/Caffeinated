@@ -27,7 +27,7 @@ services:
       API_URL: http://api:8080
     ports:
       - "3000:3000"
-    command: npm run dev
+    command: pnpm dev
 
   postgres:
     volumes:
