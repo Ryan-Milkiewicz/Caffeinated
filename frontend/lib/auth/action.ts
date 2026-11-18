@@ -154,27 +154,6 @@ export async function LoginUser(
   redirect("/feed");
 }
 
-export async function getCurrentUser() {
-  try {
-    const cookieStore = await cookies();
-
-    const response = await fetch(`${process.env.API_URL}/api/auth/me`, {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return await response.json();
-  } catch {
-    return null;
-  }
-}
-
 export async function LogoutUser() {
   const cookieStore = await cookies();
 

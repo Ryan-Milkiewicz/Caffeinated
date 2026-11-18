@@ -25,5 +25,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<UserProfile>()
             .HasIndex(p => p.UserId)
             .IsUnique();
+        
+         builder.Entity<Business>()
+            .Property(b => b.Type)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
     }
 }

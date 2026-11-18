@@ -1,13 +1,15 @@
 import { redirect } from "next/navigation";
 import { LogoutButton } from "../components/auth/logout-button";
-import { getCurrentUser } from "@/lib/auth/action";
+import { getCurrentUser } from "@/lib/auth/session";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function ConsumerLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser();
+  //const user = await getCurrentUser();
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,7 +26,9 @@ export default async function ConsumerLayout({
             <a href="/cafes">Cafes</a>
             <a href="/coffees">Coffees</a>
             <a href="/profile">Profile</a>
-            {user && <LogoutButton />}
+            <Suspense fallback={<Skeleton className="h-9 w-20" />}>
+              <UserActions />
+            </Suspense>
           </div>
         </nav>
       </header>
@@ -32,4 +36,9 @@ export default async function ConsumerLayout({
       <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
     </div>
   );
+}
+
+async function UserActions() {
+  const user = await getCurrentUser();
+  return user ? <LogoutButton /> : null;
 }
