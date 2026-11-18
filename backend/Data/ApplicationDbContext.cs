@@ -11,6 +11,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<Business> Businesses => Set<Business>();
+    public DbSet<BusinessMembership> BusinessMemberships => Set<BusinessMembership>();
+    public DbSet<Cafe> Cafes => Set<Cafe>();
+    public DbSet<CafeMenuItem> CafeMenuItems => Set<CafeMenuItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -31,5 +35,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .HasConversion<string>()
             .HasMaxLength(20)
             .IsRequired();
+        
+        builder.Entity<CafeMenuItem>()
+            .HasIndex(m => new { m.CafeId, m.CoffeeId })
+            .IsUnique();
     }
 }

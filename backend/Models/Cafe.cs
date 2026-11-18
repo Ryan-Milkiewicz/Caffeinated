@@ -1,0 +1,36 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+
+namespace backend.Models;
+
+public class Cafe
+{
+    public Guid Id { get; set; }
+
+    public Guid BusinessId { get; set; }
+
+    [MaxLength(30)]
+    public string? Phone { get; set; }
+
+    [MaxLength(255)]
+    public string Address { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string City { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string State { get; set; } = string.Empty;
+
+    [MaxLength(20)]
+    public string PostalCode { get; set; } = string.Empty;
+
+    [Precision(10, 7)]
+    public decimal? Latitude { get; set; }
+
+    [Precision(10, 7)]
+    public decimal? Longitude { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+}
