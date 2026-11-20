@@ -6,4 +6,6 @@ namespace backend.Models;
 public class ApplicationUser : IdentityUser<Guid>
 {
     public UserProfile? Profile { get; set; }
+    public ICollection<BusinessMembership> BusinessMemberships { get; set; }
+    = new List<BusinessMembership>();
 }

@@ -26,4 +26,7 @@ public class Business
     public bool IsVerified { get; set; } = false;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<BusinessMembership> Memberships { get; set; }
+    = new List<BusinessMembership>();
 }

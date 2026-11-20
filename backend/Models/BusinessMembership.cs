@@ -14,11 +14,14 @@ public class BusinessMembership
 
     public Guid BusinessId { get; set; }
 
+    public Business Business { get; set; } = null!;
+
     public Guid UserId { get; set; }
 
-    public BusinessRole Role { get; set; }
-    
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public ApplicationUser User { get; set; } = null!;
 
+    public BusinessRole Role { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 }
