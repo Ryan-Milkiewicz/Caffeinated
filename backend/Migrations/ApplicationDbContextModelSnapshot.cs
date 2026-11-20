@@ -366,6 +366,51 @@ namespace backend.Migrations
                     b.ToTable("CafeMenuItems");
                 });
 
+            modelBuilder.Entity("backend.Models.Roaster", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal?>("Latitude")
+                        .HasPrecision(10, 7)
+                        .HasColumnType("numeric(10,7)");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasPrecision(10, 7)
+                        .HasColumnType("numeric(10,7)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("State")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId")
+                        .IsUnique();
+
+                    b.ToTable("Roaster");
+                });
+
             modelBuilder.Entity("backend.Models.UserProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -480,6 +525,17 @@ namespace backend.Migrations
                     b.Navigation("Business");
                 });
 
+            modelBuilder.Entity("backend.Models.Roaster", b =>
+                {
+                    b.HasOne("backend.Models.Business", "Business")
+                        .WithOne("Roaster")
+                        .HasForeignKey("backend.Models.Roaster", "BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Business");
+                });
+
             modelBuilder.Entity("backend.Models.UserProfile", b =>
                 {
                     b.HasOne("backend.Models.ApplicationUser", "User")
@@ -503,6 +559,8 @@ namespace backend.Migrations
                     b.Navigation("Cafe");
 
                     b.Navigation("Memberships");
+
+                    b.Navigation("Roaster");
                 });
 #pragma warning restore 612, 618
         }

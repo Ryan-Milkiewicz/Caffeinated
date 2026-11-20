@@ -29,6 +29,8 @@ public class Business
 
     public Cafe? Cafe { get; set; }
 
+    public Roaster? Roaster { get; set; }
+
     public ICollection<BusinessMembership> Memberships { get; set; }
     = new List<BusinessMembership>();
 }
