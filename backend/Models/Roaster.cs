@@ -32,4 +32,8 @@ public class Roaster
 
     [Precision(10, 7)]
     public decimal? Longitude { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<Coffee> Coffees { get; set; } = new List<Coffee>();
 }

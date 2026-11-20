@@ -9,6 +9,8 @@ public class Coffee
 
     public Guid RoasterId { get; set; }
 
+    public Roaster Roaster { get; set; } = null!;
+
     [MaxLength(150)]
     public string Name { get; set; } = string.Empty;
 

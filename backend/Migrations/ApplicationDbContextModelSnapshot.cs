@@ -366,6 +366,63 @@ namespace backend.Migrations
                     b.ToTable("CafeMenuItems");
                 });
 
+            modelBuilder.Entity("backend.Models.Coffee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Farm")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("OriginCountry")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("OriginRegion")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Process")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("RoastLevel")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid>("RoasterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Variety")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoasterId");
+
+                    b.ToTable("Coffee");
+                });
+
             modelBuilder.Entity("backend.Models.Roaster", b =>
                 {
                     b.Property<Guid>("Id")
@@ -382,6 +439,9 @@ namespace backend.Migrations
                     b.Property<string>("City")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal?>("Latitude")
                         .HasPrecision(10, 7)
@@ -408,7 +468,7 @@ namespace backend.Migrations
                     b.HasIndex("BusinessId")
                         .IsUnique();
 
-                    b.ToTable("Roaster");
+                    b.ToTable("Roasters");
                 });
 
             modelBuilder.Entity("backend.Models.UserProfile", b =>
@@ -525,6 +585,17 @@ namespace backend.Migrations
                     b.Navigation("Business");
                 });
 
+            modelBuilder.Entity("backend.Models.Coffee", b =>
+                {
+                    b.HasOne("backend.Models.Roaster", "Roaster")
+                        .WithMany("Coffees")
+                        .HasForeignKey("RoasterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Roaster");
+                });
+
             modelBuilder.Entity("backend.Models.Roaster", b =>
                 {
                     b.HasOne("backend.Models.Business", "Business")
@@ -561,6 +632,11 @@ namespace backend.Migrations
                     b.Navigation("Memberships");
 
                     b.Navigation("Roaster");
+                });
+
+            modelBuilder.Entity("backend.Models.Roaster", b =>
+                {
+                    b.Navigation("Coffees");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,6 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<BusinessMembership> BusinessMemberships => Set<BusinessMembership>();
     public DbSet<Cafe> Cafes => Set<Cafe>();
     public DbSet<Roaster> Roasters => Set<Roaster>();
+    public DbSet<Coffee> Coffees => Set<Coffee>();
     public DbSet<CafeMenuItem> CafeMenuItems => Set<CafeMenuItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -52,6 +53,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .WithOne(b => b.Roaster)
             .HasForeignKey<Roaster>(r => r.BusinessId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Coffee>()
+            .HasOne(c => c.Roaster)
+            .WithMany(r => r.Coffees)
+            .HasForeignKey(c => c.RoasterId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<BusinessMembership>(entity =>
         {
