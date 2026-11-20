@@ -327,6 +327,9 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BusinessId")
+                        .IsUnique();
+
                     b.ToTable("Cafes");
                 });
 
@@ -466,6 +469,17 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("backend.Models.Cafe", b =>
+                {
+                    b.HasOne("backend.Models.Business", "Business")
+                        .WithOne("Cafe")
+                        .HasForeignKey("backend.Models.Cafe", "BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Business");
+                });
+
             modelBuilder.Entity("backend.Models.UserProfile", b =>
                 {
                     b.HasOne("backend.Models.ApplicationUser", "User")
@@ -486,6 +500,8 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Business", b =>
                 {
+                    b.Navigation("Cafe");
+
                     b.Navigation("Memberships");
                 });
 #pragma warning restore 612, 618

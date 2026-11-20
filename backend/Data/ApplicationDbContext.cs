@@ -39,6 +39,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<CafeMenuItem>()
             .HasIndex(m => new { m.CafeId, m.CoffeeId })
             .IsUnique();
+        
+        builder.Entity<Cafe>()
+            .HasOne(c => c.Business)
+            .WithOne(b => b.Cafe)
+            .HasForeignKey<Cafe>(c => c.BusinessId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<BusinessMembership>(entity =>
         {

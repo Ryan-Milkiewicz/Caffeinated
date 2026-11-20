@@ -10,6 +10,8 @@ public class Cafe
 
     public Guid BusinessId { get; set; }
 
+    public Business Business { get; set; } = null!;
+
     [MaxLength(30)]
     public string? Phone { get; set; }
 

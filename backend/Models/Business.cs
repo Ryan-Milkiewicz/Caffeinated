@@ -27,6 +27,8 @@ public class Business
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public Cafe? Cafe { get; set; }
+
     public ICollection<BusinessMembership> Memberships { get; set; }
     = new List<BusinessMembership>();
 }
