@@ -1,19 +1,15 @@
-import { redirect } from "next/navigation";
 import { LogoutButton } from "../components/auth/logout-button";
-import { getCurrentUser } from "@/lib/auth/session";
+import { verifySession } from "@/lib/auth/dal";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function ConsumerLayout({
+export default function ConsumerLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //const user = await getCurrentUser();
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Consumer navigation */}
       <header className="border-b border-border">
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <a href="/feed" className="text-xl font-bold text-primary">
@@ -26,19 +22,21 @@ export default async function ConsumerLayout({
             <a href="/cafes">Cafes</a>
             <a href="/coffees">Coffees</a>
             <a href="/profile">Profile</a>
-            <Suspense fallback={<Skeleton className="h-9 w-20" />}>
-              <UserActions />
-            </Suspense>
+            <LogoutButton />
           </div>
         </nav>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-7xl px-6 py-8">
+        <Suspense fallback={<Skeleton />}>
+          <AuthGate>{children}</AuthGate>
+        </Suspense>
+      </main>
     </div>
   );
 }
 
-async function UserActions() {
-  const user = await getCurrentUser();
-  return user ? <LogoutButton /> : null;
+async function AuthGate({ children }: { children: React.ReactNode }) {
+  await verifySession();
+  return <>{children}</>;
 }
